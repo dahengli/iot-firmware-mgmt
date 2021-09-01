@@ -3,7 +3,7 @@ info:
   title: Firmware Manager APIs
   version: "2.0"
   description: iot-firmware-mgmt apis.
-host: localhost:8088
+host: localhost:8085
 basePath: /v1/firmware
 schemes:
   - http

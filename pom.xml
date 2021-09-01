@@ -10,11 +10,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.zlgcloud.iotplatform</groupId>
     <artifactId>iot-firmware-mgmt</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>Firmware manager service for the IOT Platform</description>
-
 
     <properties>
         <java.version>1.8</java.version>
@@ -39,51 +37,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>cn.megaease</groupId>-->
-<!--            <artifactId>sdk-spring-boot-web-starter</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.zlgcloud.iotplatform</groupId>-->
-<!--            <artifactId>iot-common</artifactId>-->
-<!--            <version>${iot-platform.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>tk.mybatis</groupId>-->
-<!--            <artifactId>mapper-spring-boot-starter</artifactId>-->
-<!--            <version>2.1.5</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.liquibase</groupId>-->
-<!--            <artifactId>liquibase-core</artifactId>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-        </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>cn.megaease</groupId>
+            <artifactId>sdk-spring-boot-web-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zlgcloud.iotplatform</groupId>
+            <artifactId>iot-common</artifactId>
+            <version>${iot-platform.version}</version>
         </dependency>
 
         <dependency>
@@ -133,5 +95,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -1,0 +1,331 @@
+swagger: "2.0"
+info:
+  title: Firmware Manager APIs
+  version: "2.0"
+  description: iot-firmware-mgmt apis.
+host: localhost:8088
+basePath: /v1/firmware
+schemes:
+  - http
+  - https
+tags:
+  - name: firmware
+paths:
+  /tenants/{tenant_id}/firmwares:
+    parameters:
+      - in: path
+        required: true
+        type: integer
+        format: int64
+        name: tenant_id
+        description: 租户id
+    post:
+      tags: [ firmware ]
+      summary: 上传固件
+      operationId: uploadFirmware
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData 
+          required: true
+          type: string
+          name: dev_type
+          description: 设备型号
+        - in: formData
+          required: true
+          type: string
+          name: version
+          description: 固件的版本号。xx.xx.xx，即(大版本).(小版本).(bug版本)，大版本、小版本、bug版本为1到2个数字字符
+        - in: formData
+          required: true
+          type: string
+          name: version_num
+          description: 版本数值，生成规则为大版本占1-2位，小版本、bug版本均为2位，小版本、bug版本缺少位数时需进行补0
+        - in: formData
+          required: true
+          type: integer
+          format: int32
+          name: firmware_type
+          description: 固件类型,0:全量包,1:差分包
+        - in: formData
+          required: true
+          type: file
+          name: file      
+          description: 固件文件
+      responses:
+        200:
+          description: 操作成功。data返回上传固件的URL。
+          schema:
+            type: string
+        400:
+          description: 非法的请求
+        401:
+          description: 非法的用户认证信息
+        403:
+          description: 用户无权上传固件
+        404:
+          description: 设备类型不存在
+        409:
+          description: 固件数量超过限制
+        500:
+          description: 服务器内部错误 
+    get:
+      tags: [ firmware ]
+      operationId: listFirmware
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/FirmwaresQueryRequest"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FirmwaresQueryResponse'
+    delete:
+      tags: [ firmware ]
+      operationId: delete
+      parameters:
+        - in: query
+          required: true
+          type: string
+          name: dev_type
+          description: 设备型号
+        - in: query
+          required: true
+          type: string
+          name: version
+          description: 固件的版本号, 仅限填写数字，字母，小数点
+        - in: query
+          name: firmware_id
+          required: true
+          type: integer
+          format: int64
+          description: 固件id  
+      responses:
+        200:
+          description: 操作成功
+
+  /tenants/{tenant_id}/firmwares/{dev_type}/{version}/notify:
+    parameters:
+      - in: path
+        required: true
+        type: integer
+        format: int64
+        name: tenant_id
+        description: 租户id
+      - in: path
+        required: true
+        type: string
+        name: dev_type
+        description: 固件型号
+      - in: path
+        required: true
+        type: string
+        name: version
+        description: 固件的版本号。仅限填写数字，小数点
+    post:
+      tags: [ firmware ]
+      operationId: notifyUpgrade
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: dev_id
+          type: integer
+          format: int64
+          description: 设备id号
+        - in: formData
+          name: dev_id
+          type: integer
+          format: int64
+          description: 设备id号
+        - in: formData
+          name: gw_type
+          type: string
+          description: 网关类型（网关分组升级必填
+        - in: formData
+          name: gw_id
+          type: integer
+          format: int64
+          description: 网关id（网关分组升级必填）
+        - in: formData
+          name: upgrade_type
+          type: string
+          description: 升级类型：notify_upgrade通知升级，exec_upgrade强制升级
+        - in: formData
+          name: version_num
+          type: string
+          description: 版本数值，生成规则为大版本占1-2位，小版本、bug版本均为2位，小版本、bug版本缺少位数时需进行补0
+          required: true
+        - in: formData
+          name: is_diff
+          type: integer
+          format: int32
+          description: 是否差分升级，1：是，0：否
+          required: true
+        - in: formData
+          name: author_id
+          type: integer
+          format: int64
+          description: 目标固件拥有者,可能是用户，也可能是管理人员
+          required: true
+        - in: formData
+          name: owner_type
+          type: integer
+          format: int32
+          description: 目标固件拥有者类型,可能是用户，也可能是管理人员
+          required: true
+      responses:
+        200:
+          description: OK
+  /tenants/{tenant_id}/firmwares/{dev_type}/{version}/desc:
+    parameters:
+      - in: path
+        required: true
+        type: integer
+        format: int64
+        name: tenant_id
+      - in: path
+        required: true
+        type: string
+        name: dev_type
+      - in: path
+        required: true
+        type: integer
+        name: version
+    get:
+      tags: [ firmware ]
+      operationId: getFirmwareDesc
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/FirmwareDescResponse"
+
+### common parameters
+parameters:
+  queryPageSize:
+    name: pageSize
+    in: query
+    type: integer
+    required: false
+    default: 20
+  queryCurrentPage:
+    name: currentPage
+    in: query
+    type: integer
+    required: false
+    default: 1
+
+### common data structure
+definitions:
+  OnePageData:
+    type: object
+    properties:
+      total:
+        type: integer
+        example: 1000
+        description: 全部条目个数
+      pageSize:
+        type: integer
+        example: 20
+        description: 页面总数
+      currentPage:
+        type: integer
+        example: 1
+        description: 当前页面索引
+
+  BaseFirmwareRequest:
+    type: object
+    properties:
+      dev_type:
+        type: string
+      version:
+        type: string
+      version_num:
+        type: string
+      firmware_type:
+        type: integer
+        format: int32
+      file:
+        type: string
+
+  FirmwaresQueryRequest:
+    allOf:
+      - $ref: "#/definitions/OnePageData"
+      - type: object
+        properties:
+          dev_type:
+            type: string
+            description: 设备型号
+          firmware_type:
+            type: integer
+            format: int32
+            description: 固件类型,0:全量包,1:差分包
+          ownerType:
+             type: integer
+             format: int32
+             description: 用户类型，0：普通用户，1：管理员.加载自定义固件列表传0，加载标准固件列表传1
+      
+  FirmwaresQueryResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      author_id:
+        type: integer
+        format: int64
+      dev_type:
+        type: string
+      version:
+        type: string
+      firmware_type:
+        type: integer
+        format: int32
+      description:
+        type: string
+      size:
+        type: integer
+        format: int64
+      url:
+        type: string
+  FirmwareDescResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 固件id
+      author_id:
+        type: integer
+        format: int64
+        description: 作者id
+      name:
+        type: string
+        description: 固件名字
+      dev_type:
+        type: string
+        description: 设备类型
+      version:
+        type: string
+        description: 固件版本
+      firmware_type:
+        type: integer
+        format: int32
+        description: 固件类型
+      description:
+        type: string
+        description: 固件描述
+      size:
+        type: integer
+        format: int64
+        description:  固件描述
+      url:
+        type: string
+        description:  固件下载url

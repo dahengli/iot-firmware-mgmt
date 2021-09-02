@@ -1,0 +1,2 @@
+INSERT INTO `t_tenant_user` (`id`, `name`, `tenant_id`, `email`, `mobile`, `description`, `password`, `random_secret`, `status`, `nick_name`, `avatar`, `row_status`, `wechat_open_id`, `alipay_open_id`)
+VALUES (1, 'root', 0, 'test@mail.com', '18888989878', 'system admin', '{noop}123456', '654321', 0, '', '', 0, '', '');

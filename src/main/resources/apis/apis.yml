@@ -132,52 +132,10 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: formData
-          name: dev_id
-          type: integer
-          format: int64
-          description: 设备id号
-        - in: formData
-          name: dev_id
-          type: integer
-          format: int64
-          description: 设备id号
-        - in: formData
-          name: gw_type
-          type: string
-          description: 网关类型（网关分组升级必填
-        - in: formData
-          name: gw_id
-          type: integer
-          format: int64
-          description: 网关id（网关分组升级必填）
-        - in: formData
-          name: upgrade_type
-          type: string
-          description: 升级类型：notify_upgrade通知升级，exec_upgrade强制升级
-        - in: formData
-          name: version_num
-          type: string
-          description: 版本数值，生成规则为大版本占1-2位，小版本、bug版本均为2位，小版本、bug版本缺少位数时需进行补0
-          required: true
-        - in: formData
-          name: is_diff
-          type: integer
-          format: int32
-          description: 是否差分升级，1：是，0：否
-          required: true
-        - in: formData
-          name: author_id
-          type: integer
-          format: int64
-          description: 目标固件拥有者,可能是用户，也可能是管理人员
-          required: true
-        - in: formData
-          name: owner_type
-          type: integer
-          format: int32
-          description: 目标固件拥有者类型,可能是用户，也可能是管理人员
-          required: true
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/FirmwareNotifyRequest"
       responses:
         200:
           description: OK
@@ -194,7 +152,7 @@ paths:
         name: dev_type
       - in: path
         required: true
-        type: integer
+        type: string
         name: version
     get:
       tags: [ firmware ]
@@ -269,7 +227,39 @@ definitions:
              type: integer
              format: int32
              description: 用户类型，0：普通用户，1：管理员.加载自定义固件列表传0，加载标准固件列表传1
-      
+  FirmwareNotifyRequest:
+    type: object
+    properties:
+      dev_id:
+        type: integer
+        format: int64
+        description: 设备id号
+      gw_type:
+        type: string
+        description: 网关类型（网关分组升级必填
+      gw_id:
+        type: integer
+        format: int64
+        description: 网关id（网关分组升级必填）
+      upgrade_type:
+        type: string
+        description: 升级类型：notify_upgrade通知升级，exec_upgrade强制升级
+      version_num:
+        type: string
+        description: 版本数值，生成规则为大版本占1-2位，小版本、bug版本均为2位，小版本、bug版本缺少位数时需进行补0
+      is_diff:
+        type: integer
+        format: int32
+        description: 是否差分升级，1：是，0：否
+      author_id:
+        type: integer
+        format: int64
+        description: 目标固件拥有者,可能是用户，也可能是管理人员
+      owner_type:
+        type: integer
+        format: int32
+        description: 目标固件拥有者类型,可能是用户，也可能是管理人员
+
   FirmwaresQueryResponse:
     type: object
     properties:
@@ -298,7 +288,7 @@ definitions:
   FirmwareDescResponse:
     type: object
     properties:
-      id:
+      firmware_id:
         type: integer
         format: int64
         description: 固件id
